@@ -4,7 +4,6 @@ Future<Position> determinePosition() async {
   bool serviceEnabled;
   LocationPermission permission;
 
-  // Проверка дали локационните услуги са активирани
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
     return Future.error('Локационните услуги са деактивирани.');
@@ -24,6 +23,5 @@ Future<Position> determinePosition() async {
         'Разрешенията за локация са постоянно отказани, не можем да поискаме разрешения.');
   }
 
-  // Вземане на текущата локация
   return await Geolocator.getCurrentPosition();
 }

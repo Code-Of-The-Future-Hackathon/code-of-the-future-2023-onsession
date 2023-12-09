@@ -9,22 +9,16 @@ class Point {
   }
 }
 
-// class Polygon {
-//   List<Point> points;
-//
-//   Polygon(this.points);
-// }
-
-class Polygon {
+class CustomPolygon {
   List<Point> points;
 
-  Polygon(this.points);
+  CustomPolygon(this.points);
 
-  factory Polygon.fromJson(Map<String, dynamic> json) {
+  factory CustomPolygon.fromJson(Map<String, dynamic> json) {
     List<dynamic> jsonPoints = json['points'];
     List<Point> points =
-        jsonPoints.map((jsonPoint) => Point.fromJson(jsonPoint)).toList();
-    return Polygon(points);
+    jsonPoints.map((jsonPoint) => Point.fromJson(jsonPoint)).toList();
+    return CustomPolygon(points);
   }
 }
 
@@ -38,7 +32,7 @@ double polygonArea(List<Point> points) {
         points[i + 1].latitude * points[i].longitude;
   }
 
-  // Затваряне на многоъгълника
+  // Closing the polygon
   area += points[points.length - 1].latitude * points[0].longitude -
       points[0].latitude * points[points.length - 1].longitude;
 

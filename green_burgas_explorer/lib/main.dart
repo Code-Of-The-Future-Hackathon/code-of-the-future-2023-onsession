@@ -103,38 +103,38 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       body: Stack(
-          children: [
-            MapWidget(),
-            Positioned(
-              bottom: 16.0,
-              right: 16.0,
-              child: ClipOval(
-                child: Material(
-                  color: Colors.blue, // Цвят на кръга
-                  child: InkWell(
-                    onTap: () async {
-                      try {
-                        Position position = await determinePosition();
-                        print(
-                            'Latitude: ${position.latitude}, Longitude: ${position.longitude}');
-                      } catch (e) {
-                        print('Грешка при вземане на локацията: $e');
-                      }
-                    },
-                    child: const SizedBox(
-                      width: 56,
-                      height: 56,
-                      child: Icon(
-                        FontAwesomeIcons.locationCrosshairs,
-                        color: Colors.white, // Цвят на иконата
-                      ),
+        children: [
+          MapWidget(polygonsData: polygonsData), // Pass the loaded data to MapWidget
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: ClipOval(
+              child: Material(
+                color: Colors.blue, // Цвят на кръга
+                child: InkWell(
+                  onTap: () async {
+                    try {
+                      Position position = await determinePosition();
+                      print(
+                          'Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+                    } catch (e) {
+                      print('Грешка при вземане на локацията: $e');
+                    }
+                  },
+                  child: const SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Icon(
+                      FontAwesomeIcons.locationCrosshairs,
+                      color: Colors.white, // Цвят на иконата
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 }

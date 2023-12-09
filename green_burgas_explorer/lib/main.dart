@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:green_burgas_explorer/calculations.dart';
+import 'package:green_burgas_explorer/closer_polyngon.dart';
 import 'package:green_burgas_explorer/map.dart';
 import 'dart:math';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:green_burgas_explorer/map_sheet_model.dart';
+import 'package:geolocator/geolocator.dart';
+
+double area1 = 0.0,
+    area2 = 0.0,
+    area3 = 0.0,
+    area4 = 0.0,
+    area5 = 0.0,
+    area6 = 0.0;
 
 void main() {
   List<Point> polygon1 = [
@@ -253,17 +264,16 @@ void main() {
         Point(42.5128369, 27.4772273),
         Point(42.5134541, 27.4761646)
       ];
-
-  double area = polygonArea(polygon1);
-  double area2 = polygonArea(polygon2);
-  double area3 = polygonArea(polygon3);
-  double area4 = polygonArea(polygon4);
-  double area5 = polygonArea(polygon5);
-  double area6 = polygonArea(polygon6);
+  area1 = polygonArea(polygon1);
+  area2 = polygonArea(polygon2);
+  area3 = polygonArea(polygon3);
+  area4 = polygonArea(polygon4);
+  area5 = polygonArea(polygon5);
+  area6 = polygonArea(polygon6);
   print(
-      "Площта на многоъгълник 1 е: $area \n Площта на многоъгълник 2 е: $area2 \n Площта на многоъгълник 3 е: $area3 \n Площта на многоъгълник 4 е: $area4 \n Площта на многоъгълник 5 е: $area5 \n Площта на многоъгълник 6 е: $area6");
+      "Площта на многоъгълник 1 е: $area1 \n Площта на многоъгълник 2 е: $area2 \n Площта на многоъгълник 3 е: $area3 \n Площта на многоъгълник 4 е: $area4 \n Площта на многоъгълник 5 е: $area5 \n Площта на многоъгълник 6 е: $area6");
 
-  //runApp(MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -275,22 +285,44 @@ class MyApp extends StatelessWidget {
           title: const Text('GreenBurgas Explorer'),
           centerTitle: true,
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: MapWidget(),
+        body: Stack(
+          children: [
+            MapWidget(),
+            Positioned(
+              bottom: 16.0,
+              right: 16.0,
+              child: ClipOval(
+                child: Material(
+                  color: Colors.blue, // Цвят на кръга
+                  child: InkWell(
+                    onTap: () async {
+                      try {
+                        Position position = await determinePosition();
+                        print(
+                            'Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+                      } catch (e) {
+                        print('Грешка при вземане на локацията: $e');
+                      }
+                    },
+                    child: const SizedBox(
+                      width: 56,
+                      height: 56,
+                      child: Icon(
+                        FontAwesomeIcons.locationCrosshairs,
+                        color: Colors.white, // Цвят на иконата
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-
+//
 // class MyApp extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
@@ -299,7 +331,7 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 // }
-
+//
 // class HomeScreen extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {

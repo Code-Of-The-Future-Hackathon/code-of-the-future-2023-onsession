@@ -6,11 +6,12 @@ class MapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      options: MapOptions(
-        center: LatLng(42.50655514080855, 27.465892134392316),
+      options: const MapOptions(
+        initialCenter: LatLng(42.50655514080855, 27.465892134392316),
         maxZoom: 16.0,
         minZoom: 2.0,
-        zoom: 13.0,
+        initialZoom: 13.0,
+        interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
       ),
       children: [
         TileLayer(

@@ -41,12 +41,61 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Map<String, dynamic> polygonsData = {};
-
+  List<String> stringNames = ['Морска градина', 'Парк Езеро','Парк Света Троица', 'Парк Славейков', "Парк Изгрев",'Борисова градина'];
+  List<String> stringCapacity = ['600дка', '341дка','146дка', '132дка', "119дка",'97дка'];
   @override
   void initState() {
     super.initState();
     loadJsonData();
   }
+
+  void _showLeaderboard() {
+  List<MapEntry<String, double>> areas = [];
+
+  for (int i = 1; i <= polygonsData.length; i++) {
+    String polygonKey = 'polygon$i';
+    if (polygonsData.containsKey(polygonKey)) {
+      List<Point> points = (polygonsData[polygonKey]['points'] as List<dynamic>)
+          .map<Point>((dynamic point) => Point.fromJson(point))
+          .toList();
+      double area = polygonArea(points);
+      areas.add(MapEntry(polygonKey, area));
+    }
+  }
+
+  // Sort the areas from largest to smallest
+  areas.sort((a, b) => b.value.compareTo(a.value));
+
+  // Show the sorted list in a dialog or a new screen
+  showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    // Create a list of Text widgets for each area
+    List<Widget> areaWidgets = [];
+    for (int i = 0; i < areas.length; i++) {
+      areaWidgets.add(Text('${stringNames[i]}: ${stringCapacity[i]}'));
+    }
+
+    return AlertDialog(
+      title: Text('Leaderboard'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: areaWidgets,
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text('Close'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  },
+);
+
+}
 
   Future<void> loadJsonData() async {
     try {
@@ -131,6 +180,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
+            ),
+          ),
+
+          Positioned(
+            bottom: 16.0,
+            left: 16.0,
+            child: FloatingActionButton(
+              onPressed: _showLeaderboard,
+              child: Icon(FontAwesomeIcons.trophy),
             ),
           ),
         ],

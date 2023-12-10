@@ -11,7 +11,6 @@ class MapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<CustomPolygon> polygons = [];
-     
 
     // Iterate through polygonsData and create CustomPolygon objects
     for (int i = 1; i <= polygonsData.length; i++) {
@@ -35,15 +34,17 @@ class MapWidget extends StatelessWidget {
       children: [
         TileLayer(
           urlTemplate:
-          'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png',
+              'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.example.app',
         ),
-        // Use the CustomPolygon class
+        // Use the CustomPolygon class to display polygons
         for (CustomPolygon polygon in polygons)
           PolygonLayer(
             polygons: [
               Polygon(
-                points: polygon.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
+                points: polygon.points
+                    .map((point) => LatLng(point.latitude, point.longitude))
+                    .toList(),
                 color: Colors.green,
                 isFilled: true,
                 borderColor: Colors.white, // Set the color of the border

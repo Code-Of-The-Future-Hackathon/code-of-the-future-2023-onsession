@@ -22,23 +22,21 @@ class Point {
 }
 
 List<String> names = [
-      
-      'Morska gradina',
-      'Park "Ezero"',
-      'Park "Izgrev"',
-      'Park "Sveta Troica"',
-      'Park "Slaveykov"',
-      'Borisova gradina',
-    ];
-    List<String> description = [
-      "History of the park, types of plants and animals. Sports facilities, places for relaxation, cafes. Information about transport and parking.",
-      "Features of the park, types of plants and animals. Children's playgrounds, relaxation zones, sports facilities. Opportunities for sports and walks.",
-      "Diversity of flora and fauna, historical landmarks. Recreation areas, sports fields, cafes. Opportunities for organizing events and activities.",
-      "Main characteristics, historical significance, types of plants and animals. Places for recreation, children's playgrounds, sports facilities. Information about cultural and sports events held there.",
-      "Historical and cultural value, natural features. Benches, walking paths, children's corners. Information about cultural events and festivals held.",
-      "Information about the lake, surrounding nature, historical value. Picnic areas, fishing spots, walking trails. Transport links, parking.",
-    ];
-
+  'Morska gradina',
+  'Park "Ezero"',
+  'Park "Izgrev"',
+  'Park "Sveta Troica"',
+  'Park "Slaveykov"',
+  'Borisova gradina',
+];
+List<String> description = [
+  "History of the park, types of plants and animals. Sports facilities, places for relaxation, cafes. Information about transport and parking.",
+  "Features of the park, types of plants and animals. Children's playgrounds, relaxation zones, sports facilities. Opportunities for sports and walks.",
+  "Diversity of flora and fauna, historical landmarks. Recreation areas, sports fields, cafes. Opportunities for organizing events and activities.",
+  "Main characteristics, historical significance, types of plants and animals. Places for recreation, children's playgrounds, sports facilities. Information about cultural and sports events held there.",
+  "Historical and cultural value, natural features. Benches, walking paths, children's corners. Information about cultural events and festivals held.",
+  "Information about the lake, surrounding nature, historical value. Picnic areas, fishing spots, walking trails. Transport links, parking.",
+];
 
 void main() {
   runApp(MyApp());
@@ -61,99 +59,80 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Map<String, dynamic> polygonsData = {};
-  List<String> stringCapacity = ['600дка', '341дка','146дка', '132дка', "119дка",'97дка'];
+  List<String> stringCapacity = ['600дка', '341дка', '146дка', '132дка', "119дка", '97дка'];
+
   @override
   void initState() {
     super.initState();
     loadJsonData();
   }
 
+  // Function to show the nearest polygon dialog
   void _showLeaderboard1() {
-  findNearestPolygon().then((nearestPolygonKey) {
-    int index = names.indexOf(nearestPolygonKey);
-    index = index * -1 - 1;
-    if (index != -1) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Text('The nearest green area is ${names[index]}'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      print("Nearest polygon not found in names list ${index}");
-    }
-  });
-}
-
-
-  void _showLeaderboard() {
-  List<MapEntry<String, double>> areas = [];
-
-  for (int i = 1; i <= polygonsData.length; i++) {
-    String polygonKey = 'polygon$i';
-    if (polygonsData.containsKey(polygonKey)) {
-      List<Point> points = (polygonsData[polygonKey]['points'] as List<dynamic>)
-          .map<Point>((dynamic point) => Point.fromJson(point))
-          .toList();
-      double area = polygonArea(points);
-      areas.add(MapEntry(polygonKey, area));
-    }
+    findNearestPolygon().then((nearestPolygonKey) {
+      int index = names.indexOf(nearestPolygonKey);
+      index = index * -1 - 1;
+      if (index != -1) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Text('The nearest green area is ${names[index]}'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print("Nearest polygon not found in names list ${index}");
+      }
+    });
   }
 
-  // Sort the areas from largest to smallest
-  areas.sort((a, b) => b.value.compareTo(a.value));
+  // Function to show the leaderboard dialog
+  void _showLeaderboard() {
+    List<MapEntry<String, double>> areas = [];
 
-  // Show the sorted list in a dialog or a new screen
-  showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    // Create a list of Text widgets for each area
-    List<Widget> areaWidgets = [];
-    for (int i = 0; i < areas.length; i++) {
-      areaWidgets.add(Text('${names[i]}: ${stringCapacity[i]}'));
+    for (int i = 1; i <= polygonsData.length; i++) {
+      String polygonKey = 'polygon$i';
+      if (polygonsData.containsKey(polygonKey)) {
+        List<Point> points = (polygonsData[polygonKey]['points'] as List<dynamic>)
+            .map<Point>((dynamic point) => Point.fromJson(point))
+            .toList();
+        double area = polygonArea(points);
+        areas.add(MapEntry(polygonKey, area));
+      }
     }
 
-    return AlertDialog(
-      title: Text('Leaderboard'),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: areaWidgets,
-        ),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: Text('Close'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
-  },
-);
+    // Sort the areas from largest to smallest
+    areas.sort((a, b) => b.value.compareTo(a.value));
 
-}
-
-  void _showDialog(BuildContext context, String name, String option) {
+    // Show the sorted list in a dialog or a new screen
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        // Create a list of Text widgets for each area
+        List<Widget> areaWidgets = [];
+        for (int i = 0; i < areas.length; i++) {
+          areaWidgets.add(Text('${names[i]}: ${stringCapacity[i]}'));
+        }
+
         return AlertDialog(
-          title: Text(name),
-          content: Text(option),
+          title: Text('Leaderboard'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: areaWidgets,
+            ),
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Text('Close'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -164,6 +143,33 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Function to show a dialog with name and description
+  void _showDialog(BuildContext context, String name, String option) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Text(name),
+          ),
+          content: Text(option),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: Colors.green),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to load JSON data
   Future<void> loadJsonData() async {
     try {
       // Get the JSON file path
@@ -193,6 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  // Function to calculate the area of a polygon
   double polygonArea(List<Point> points) {
     if (points.length < 3) return 0.0;
 
@@ -212,37 +219,45 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
-  appBar: AppBar(
-    title: const Text('GreenBurgas Explorer'),
-    centerTitle: true,
-  ),
-  drawer: Drawer(
-    child: ListView(  
-      padding: EdgeInsets.zero,
-      children: <Widget>[
-        DrawerHeader(
-          decoration: BoxDecoration(
-            color: Colors.blue,
-          ),
-          child: Text(
-            'Green spaces',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-            ),
-          ),
+      appBar: AppBar(
+        title: const Text(
+          'GreenBurgas Explorer',
+          style: TextStyle(color: Colors.white),
         ),
-        for (int i = 0; i < names.length; i++)
-          ListTile(
-            title: Text(names[i]),
-            onTap: () => _showDialog(context, names[i], description[i]),
-          ),
-        
-      ],
-    ),
-  ),
+        centerTitle: true,
+        backgroundColor: Colors.green, // Change the background color
+        elevation: 0, // Remove the shadow beneath the app bar
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Container(
+              height: 100, // Set the height to your desired value
+              child: const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                ),
+                child: Center(
+                  child: Text(
+                    'Green spaces',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            for (int i = 0; i < names.length; i++)
+              ListTile(
+                title: Text(names[i]),
+                onTap: () => _showDialog(context, names[i], description[i]),
+              ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           MapWidget(polygonsData: polygonsData), // Pass the loaded data to MapWidget
@@ -259,7 +274,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
 
                       _showLeaderboard1();
-                      
+
                       findNearestPolygon().then((nearestPolygonKey) {
                         print(nearestPolygonKey);
                       });
@@ -279,13 +294,16 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-
           Positioned(
             bottom: 16.0,
             left: 16.0,
             child: FloatingActionButton(
+              backgroundColor: Colors.green,
               onPressed: _showLeaderboard,
-              child: Icon(FontAwesomeIcons.trophy),
+              child: const Icon(
+                FontAwesomeIcons.trophy,
+                color: Colors.white,
+              ),
             ),
           ),
         ],

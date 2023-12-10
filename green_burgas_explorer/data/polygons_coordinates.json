@@ -1,5 +1,5 @@
 {
-  "1": {
+  "polygon1": {
     "name": "Borisova gradina",
     "points": [
       {"latitude": 42.4964575, "longitude": 27.4644073},
@@ -22,7 +22,7 @@
       {"latitude": 42.4964575, "longitude": 27.4644073}
     ]
   },
-  "2": {
+  "polygon2": {
     "name": "Park 'Izgrev'",
     "points": [
       {"latitude": 42.5260581, "longitude": 27.4612257},
@@ -53,7 +53,7 @@
       {"latitude": 42.5260581, "longitude": 27.4612257}
     ]
   },
-  "3": {
+  "polygon3": {
     "name": "Park 'Rosenec'",
     "points":[
       {"latitude": 42.5208176, "longitude": 27.4536228},
@@ -92,7 +92,7 @@
     ]
 
   },
-  "4": {
+  "polygon4": {
     "name": "Morska gradina",
     "points": [
       {"latitude": 42.4895702, "longitude": 27.4809188},
@@ -174,7 +174,7 @@
     ]
 
   },
-  "5": {
+  "polygon5": {
     "name": "Park 'Sveta Troica'",
     "points": [
       {"latitude": 42.5156267, "longitude": 27.461691},
@@ -211,7 +211,7 @@
     ]
 
   },
-  "6": {
+  "polygon6": {
     "name": "Park 'Ezero'",
     "points": [
       {"latitude": 42.5134541, "longitude": 27.4761646},

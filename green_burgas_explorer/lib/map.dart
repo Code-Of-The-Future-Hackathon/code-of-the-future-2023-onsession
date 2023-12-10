@@ -11,6 +11,7 @@ class MapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<CustomPolygon> polygons = [];
+     
 
     // Iterate through polygonsData and create CustomPolygon objects
     for (int i = 1; i <= polygonsData.length; i++) {

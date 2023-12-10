@@ -21,6 +21,25 @@ class Point {
   }
 }
 
+List<String> names = [
+      
+      'Morska gradina',
+      'Park "Ezero"',
+      'Park "Izgrev"',
+      'Park "Sveta Troica"',
+      'Park "Slaveykov"',
+      'Borisova gradina',
+    ];
+    List<String> description = [
+      "History of the park, types of plants and animals. Sports facilities, places for relaxation, cafes. Information about transport and parking.",
+      "Features of the park, types of plants and animals. Children's playgrounds, relaxation zones, sports facilities. Opportunities for sports and walks.",
+      "Diversity of flora and fauna, historical landmarks. Recreation areas, sports fields, cafes. Opportunities for organizing events and activities.",
+      "Main characteristics, historical significance, types of plants and animals. Places for recreation, children's playgrounds, sports facilities. Information about cultural and sports events held there.",
+      "Historical and cultural value, natural features. Benches, walking paths, children's corners. Information about cultural events and festivals held.",
+      "Information about the lake, surrounding nature, historical value. Picnic areas, fishing spots, walking trails. Transport links, parking.",
+    ];
+
+
 void main() {
   runApp(MyApp());
 }
@@ -29,6 +48,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: MyHomePage(),
     );
   }
@@ -41,13 +61,40 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Map<String, dynamic> polygonsData = {};
-  List<String> stringNames = ['Морска градина', 'Парк Езеро','Парк Света Троица', 'Парк Славейков', "Парк Изгрев",'Борисова градина'];
   List<String> stringCapacity = ['600дка', '341дка','146дка', '132дка', "119дка",'97дка'];
   @override
   void initState() {
     super.initState();
     loadJsonData();
   }
+
+  void _showLeaderboard1() {
+  findNearestPolygon().then((nearestPolygonKey) {
+    int index = names.indexOf(nearestPolygonKey);
+    index = index * -1 - 1;
+    if (index != -1) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text('The nearest green area is ${names[index]}'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print("Nearest polygon not found in names list ${index}");
+    }
+  });
+}
+
 
   void _showLeaderboard() {
   List<MapEntry<String, double>> areas = [];
@@ -73,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Create a list of Text widgets for each area
     List<Widget> areaWidgets = [];
     for (int i = 0; i < areas.length; i++) {
-      areaWidgets.add(Text('${stringNames[i]}: ${stringCapacity[i]}'));
+      areaWidgets.add(Text('${names[i]}: ${stringCapacity[i]}'));
     }
 
     return AlertDialog(
@@ -96,6 +143,26 @@ class _MyHomePageState extends State<MyHomePage> {
 );
 
 }
+
+  void _showDialog(BuildContext context, String name, String option) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(name),
+          content: Text(option),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> loadJsonData() async {
     try {
@@ -145,12 +212,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // No UI elements needed for printing only
+    
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('GreenBurgas Explorer'),
-        centerTitle: true,
-      ),
+  appBar: AppBar(
+    title: const Text('GreenBurgas Explorer'),
+    centerTitle: true,
+  ),
+  drawer: Drawer(
+    child: ListView(  
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        DrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.blue,
+          ),
+          child: Text(
+            'Green spaces',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+            ),
+          ),
+        ),
+        for (int i = 0; i < names.length; i++)
+          ListTile(
+            title: Text(names[i]),
+            onTap: () => _showDialog(context, names[i], description[i]),
+          ),
+        
+      ],
+    ),
+  ),
       body: Stack(
         children: [
           MapWidget(polygonsData: polygonsData), // Pass the loaded data to MapWidget
@@ -159,13 +251,18 @@ class _MyHomePageState extends State<MyHomePage> {
             right: 16.0,
             child: ClipOval(
               child: Material(
-                color: Colors.blue, // Цвят на кръга
+                color: Colors.green, // Цвят на кръга
                 child: InkWell(
                   onTap: () async {
                     try {
                       Position position = await determinePosition();
-                      print(
-                          'Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+                      print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+
+                      _showLeaderboard1();
+                      
+                      findNearestPolygon().then((nearestPolygonKey) {
+                        print(nearestPolygonKey);
+                      });
                     } catch (e) {
                       print('Грешка при вземане на локацията: $e');
                     }
